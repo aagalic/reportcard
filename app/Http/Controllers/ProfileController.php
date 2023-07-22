@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -22,6 +25,34 @@ class ProfileController extends Controller
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
+    }
+
+    function store(Request $request) : RedirectResponse 
+    {
+
+
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|',
+            'password' => ['required'],
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]
+        );
+        
+        $image_name =  time().'_'.$request->profilepic->getClientOriginalName();
+        $request->profilepic->storeAs('images', $image_name, 'public');
+
+        // Log::info($request-file('profilepic'));
+        Log::info($request->profilepic->extension());
+        Log::info($request->all());
+
+        return Redirect('/');
     }
 
     /**

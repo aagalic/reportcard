@@ -27,6 +27,7 @@ use Inertia\Inertia;
 
 Route::inertia('/', "ReportcardDashboard");
 
+Route::post("/", [ProfileController::class, 'store']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

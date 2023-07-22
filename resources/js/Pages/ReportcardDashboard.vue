@@ -1,5 +1,34 @@
-<template>
 
+<script setup>
+import { router } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
+
+const form = useForm({
+    forceFormData: true,
+    name: null,
+    email: null,
+    password: null,
+    bio: null,
+    profilepic: null
+})
+
+function handleProfileForm(){
+    form.post(
+    "/",
+    form,
+    {
+        forceFormData: true,
+    }
+)
+}
+
+function handleSchoolForm(){
+    alert('hello from school')
+}
+    
+
+</script>
+<template>
   <nav class="top-toolbar navbar navbar-mobile navbar-tablet">
 				<ul class="navbar-nav nav-left">
 					<li class="nav-item">
@@ -17,10 +46,8 @@
 						</a>
 					</li>
 				</ul>
-
 			</nav>
 			<nav class="top-toolbar navbar navbar-desktop flex-nowrap">
-
 				<ul class="site-logo">
 					<li>
 						<!-- START LOGO -->
@@ -80,11 +107,8 @@
                                         Profile</a>
                                     <a class="nav-link" id="v-pills-orgprofile-tab" data-toggle="pill"
                                         href="#v-pills-orgprofile" role="tab"
-                                        aria-controls="v-pills-orgprofile" aria-selected="true">School
-                                        Profile</a>
-                                    <a class="nav-link" id="v-pills-upload-tab" data-toggle="pill"
-                                        href="#v-pills-upload" role="tab" aria-controls="v-pills-upload"
-                                        aria-selected="false">Generate Cards</a>
+                                        aria-controls="v-pills-orgprofile" aria-selected="true">Generate Report Cards</a>
+                                   
                                 </div>
                             </div>
                             <div class="col-md-12 col-lg-9">
@@ -92,31 +116,32 @@
                                     <div class="tab-pane fade show active" id="v-pills-profile"
                                         role="tabpanel" aria-labelledby="v-pills-profile-tab">
                                         <h4 class="card-heading p-b-20">Profile</h4>
-                                        <form>
+                                        <form @submit.prevent="form.post('/')">
                                             <div class="form-group">
                                                 <!-- <img src="../assets/img/avatars/1.jpg"
                                                     class="w-50 rounded-circle" alt="Albert Einstein"> -->
                                                 <div class="file-upload">
-                                                    <label for="upload" class="btn btn-primary m-b-0 m-l-5 m-r-5">Upload
-                                                        a new picture</label>
-                                                    <input id="upload" class="file-upload__input" type="file"
-                                                        name="file-upload">
+                                                    <label for="upload" class="btn btn-primary m-b-0 m-l-5 m-r-5">Upload a new picture</label>
+                                                    <input id="upload" @input="form.profilepic = $event.target.files[0]" class="file-upload__input" type="file"/>
+                                                    <!-- <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                                    {{ form.progress.percentage }}%
+                                                    </progress> -->
                                                 </div>
                                                 <button class="btn btn-secondary">Delete</button>
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputName">Your name</label>
-                                                <input type="text" class="form-control" id="inputName"
+                                                <input v-model="form.name" type="text" class="form-control" id="inputName"
                                                     autocomplete="name" placeholder="Enter your name">
                                             </div>
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">Email address</label>
-                                                <input type="email" class="form-control" autocomplete="email"
+                                                <input v-model="form.email" type="email" class="form-control" autocomplete="email"
                                                     id="exampleInputEmail1" placeholder="Enter email">
                                             </div>
                                             <div class="form-group">
                                                 <label for="exampleInputPassword1">Password</label>
-                                                <input type="password" class="form-control"
+                                                <input v-model="form.password" type="password" class="form-control"
                                                     id="exampleInputPassword1" autocomplete="password"
                                                     aria-describedby="passwordHelp" placeholder="Password">
                                                 <small id="passwordHelp" class="form-text text-muted">We
@@ -125,68 +150,84 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputLocation">Location</label>
-                                                <input type="text" class="form-control" id="inputLocation"
+                                                <input v-model="location" type="text" class="form-control" id="inputLocation"
                                                     placeholder="Enter location">
                                             </div>
                                             <div class="form-group">
                                                 <label for="exampleFormControlTextarea1">Bio</label>
-                                                <textarea class="form-control" id="exampleFormControlTextarea1"
+                                                <textarea v-model="form.bio" class="form-control" id="exampleFormControlTextarea1"
                                                     rows="3"></textarea>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                                            <button type="submit" @click="handleProfileForm()" class="btn btn-primary">Update Profile</button>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="v-pills-orgprofile" role="tabpanel"
                                         aria-labelledby="v-pills-orgprofile-tab">
-                                        <h4>School profile</h4>
-                                    </div>
-                                    <div class="tab-pane fade" id="v-pills-upload" role="tabpanel"
-                                        aria-labelledby="v-pills-upload-tab">
-                                        <h4 class="card-heading p-b-20">Payment Info</h4>
+                                        <h4  class="card-heading">Generate Report Cards</h4>
                                         <form>
-                                            <div class="form-group ">
-                                                <div class="custom-control custom-radio m-b-20">
-                                                    <input type="radio" id="customRadioInline1"
-                                                        name="customRadioInline1" class="custom-control-input" checked>
-                                                    <!-- <label class="custom-control-label" for="customRadioInline1">
-                                                        <img class="max-w-50 m-r-15"
-                                                            src="../assets/img/payment-icons/Visa%402x.png" alt>
-                                                        <img class="max-w-50 m-r-15"
-                                                            src="../assets/img/payment-icons/MasterCard%402x.png" alt>
-                                                        <img class="max-w-50 m-r-15"
-                                                            src="../assets/img/payment-icons/Discover%402x.png" alt>
-                                                        <img class="max-w-50 m-r-15"
-                                                            src="../assets/img/payment-icons/AmericanExpress%402x.png"
-                                                            alt></label> -->
-                                                </div>
-                                                <div class="custom-control custom-radio m-b-20">
-                                                    <input type="radio" id="customRadioInline2"
-                                                        name="customRadioInline1" class="custom-control-input">
-                                                    <!-- <label class="custom-control-label" for="customRadioInline2"><img
-                                                            class="max-w-50 m-r-15"
-                                                            src="../assets/img/payment-icons/Paypal%402x.png" alt></label> -->
-                                                </div>
-                                            </div>
+                                           
                                             <div class="form-group">
-                                                <label for="inputCard">Card Number</label>
-                                                <input type="text" class="form-control" id="inputCard"
-                                                    placeholder="•••• •••• •••• 1234">
+                                                <div class="form-row">
+
+                                                    <label for="inputCard">School Name</label>
+                                                    <input type="text" class="form-control" id="inputCard"
+                                                        placeholder="School Name">
+                                                </div>
+                                                <div class="form-row">
+    
+                                                    <label for="inputCard">Report Title</label>
+                                                    <input type="text" class="form-control" id="inputCard"
+                                                        placeholder="Report Title">
+                                                </div>
+
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="level">Level</label>
+                                                        <input type="text" class="form-control" id="level"
+                                                            placeholder="Level">
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="level">Contact Number</label>
+                                                        <input type="text" class="form-control" id="level"
+                                                            placeholder="Contact Number">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-row">
+                                                    <label for="upload" class="btn btn-primary m-b-10 m-l-5 m-r-5">Upload School Logo </label>
+                                                    <input id="upload" @input="form.schoollogo = $event.target.files[0]" class="file-upload__input" type="file"/>
+                                                </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-6">
-                                                    <label for="inputExpiration">Expiration</label>
-                                                    <input type="text" class="form-control" id="inputExpiration"
-                                                        placeholder="MM / YY">
+                                                    <label for="academicyear">Academic Year</label>
+                                                    <input type="text" class="form-control" id="academicyear"
+                                                        placeholder="YYYY">
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label for="inputCvv">CVV</label>
-                                                    <input type="text" class="form-control" id="inputCvv"
-                                                        placeholder="123">
+                                                    <label for="term">Term</label>
+                                                    <input type="text" class="form-control" id="term"
+                                                        placeholder="Term">
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="nexttermbegins">Next Term Begins</label>
+                                                    <input type="text" class="form-control" id="nexttermbegins"
+                                                        placeholder="YYYY">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="term">Term</label>
+                                                    <input type="text" class="form-control" id="term"
+                                                        placeholder="Term">
+                                                </div>
+                                                <label for="upload" class="btn btn-primary m-b-0 m-l-5 m-r-5">Upload grades</label>
+                                                <input id="upload" @input="form.grades = $event.target.files[0]" class="file-upload__input" type="file"/>
+                                            </div>
+                                            <button type="submit" @click="handleGradesForm()" class="btn btn-primary mt-5">Generate Grades</button>
                                         </form>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -198,13 +239,3 @@
 </div>
 </div>
 </template>
-
-<script>
-export default {
-
-}
-</script>
-
-<style>
-
-</style>
